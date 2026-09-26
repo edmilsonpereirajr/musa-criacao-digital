@@ -5,9 +5,7 @@ export async function getActiveProducts() {
 
   const { data, error } = await supabase
     .from("products")
-    .select(
-      "id, slug, title, description, price, image_url, content_type, file_path",
-    )
+    .select("id, slug, title, description, price, image_url")
     .eq("is_active", true)
     .order("created_at", { ascending: true });
 
@@ -23,9 +21,7 @@ export async function getActiveProductBySlug(slug: string) {
 
   const { data, error } = await supabase
     .from("products")
-    .select(
-      "id, slug, title, description, price, image_url, content_type, file_path",
-    )
+    .select("id, slug, title, description, price, image_url")
     .eq("slug", slug)
     .eq("is_active", true)
     .maybeSingle();

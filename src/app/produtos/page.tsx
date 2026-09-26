@@ -1,8 +1,11 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { products } from "@/data/products";
 
-export default function ProductsPage() {
+import { Button } from "@/components/ui/Button";
+import { getActiveProducts } from "@/lib/products";
+
+export default async function ProductsPage() {
+  const products = await getActiveProducts();
+
   return (
     <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="max-w-2xl">
@@ -23,7 +26,7 @@ export default function ProductsPage() {
       <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((product) => (
           <article
-            key={product.slug}
+            key={product.id}
             className="overflow-hidden rounded-2xl border border-[#d8d0c4] bg-[#f0ebe1]"
           >
             <div className="aspect-[4/3] bg-[#e8e1d5]" />
@@ -39,14 +42,16 @@ export default function ProductsPage() {
 
               <div className="mt-6 flex items-center justify-between gap-4">
                 <span className="font-semibold text-[#151515]">
-                  {product.price.toLocaleString("pt-BR", {
+                  {Number(product.price).toLocaleString("pt-BR", {
                     style: "currency",
                     currency: "BRL",
                   })}
                 </span>
 
                 <Link href={`/produto/${product.slug}`}>
-                     <Button className="px-5 py-2.5 text-sm">Ver produto</Button>
+                  <Button className="px-5 py-2.5 text-sm">
+                    Ver produto
+                  </Button>
                 </Link>
               </div>
             </div>

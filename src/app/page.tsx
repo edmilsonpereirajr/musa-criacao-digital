@@ -1,10 +1,24 @@
 import Link from "next/link";
+
 import { Button } from "@/components/ui/Button";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { CategoryCard } from "@/components/ui/CategoryCard";
-import { products } from "@/data/products";
+import { createClient } from "@/lib/supabase-server";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+
+  const { data: products, error } = await supabase
+    .from("products")
+    .select("id, slug, title, description, price")
+    .eq("is_active", true)
+    .order("created_at", { ascending: true })
+    .limit(3);
+
+  if (error) {
+    throw new Error("Não foi possível carregar os produtos.");
+  }
+
   return (
     <div>
       <section className="border-b border-[#d8d0c4]">
@@ -78,7 +92,7 @@ export default function Home() {
               slug={product.slug}
               title={product.title}
               description={product.description}
-              price={product.price}
+              price={Number(product.price)}
             />
           ))}
         </div>

@@ -1,32 +1,23 @@
 import Link from "next/link";
-import { productMap } from "@/data/products";
+import { notFound } from "next/navigation";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
+import { getActiveProductBySlug } from "@/lib/products";
 
 type ProductPageProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
-export default function ProductPage({
+export default async function ProductPage({
   params,
 }: ProductPageProps) {
-  const product = productMap[params.slug];
+  const { slug } = await params;
+
+  const product = await getActiveProductBySlug(slug);
 
   if (!product) {
-    return (
-      <main className="mx-auto max-w-4xl px-4 py-20 text-center sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-semibold text-[#151515]">
-          Produto não encontrado
-        </h1>
-
-        <Link
-          href="/produtos"
-          className="mt-6 inline-flex rounded-full bg-[#d42367] px-6 py-3 font-medium text-white hover:bg-[#b91d58]"
-        >
-          Voltar para produtos
-        </Link>
-      </main>
-    );
+    notFound();
   }
 
   return (
@@ -48,19 +39,19 @@ export default function ProductPage({
           </p>
 
           <p className="mt-8 text-3xl font-semibold text-[#151515]">
-            {product.price.toLocaleString("pt-BR", {
+            {Number(product.price).toLocaleString("pt-BR", {
               style: "currency",
               currency: "BRL",
             })}
           </p>
-
-          <button
-            type="button"
-            className="mt-8 w-full rounded-full bg-[#d42367] px-7 py-4 font-medium text-white transition-colors hover:bg-[#b91d58]"
-          >
-            Comprar agora
-          </button>
-
+          <div className="mt-8">
+      <AddToCartButton
+    productId={product.id}
+    slug={product.slug}
+    title={product.title}
+    price={Number(product.price)}
+       />
+      </div>
           <Link
             href="/produtos"
             className="mt-4 block text-center text-sm font-medium text-[#6f6a63] hover:text-[#d42367]"
