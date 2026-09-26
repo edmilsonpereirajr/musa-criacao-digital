@@ -1,38 +1,16 @@
 import Link from "next/link";
-
-const products = {
-  "pack-prompts-fotos": {
-    title: "Pack de Prompts para Fotos",
-    description:
-      "Um pacote com 100 prompts para criar fotos incríveis com inteligência artificial.",
-    price: "R$ 19,90",
-  },
-  "pack-criativo": {
-    title: "Pack Criativo",
-    description:
-      "Materiais digitais para deixar suas criações mais profissionais.",
-    price: "R$ 29,90",
-  },
-  "ebook-criatividade": {
-    title: "E-book Criatividade",
-    description:
-      "Conteúdo prático para desenvolver ideias e melhorar suas criações.",
-    price: "R$ 24,90",
-  },
-};
+import { productMap } from "@/data/products";
 
 type ProductPageProps = {
-  params: Promise<{
+  params: {
     slug: string;
-  }>;
+  };
 };
 
-export default async function ProductPage({
+export default function ProductPage({
   params,
 }: ProductPageProps) {
-  const { slug } = await params;
-
-  const product = products[slug as keyof typeof products];
+  const product = productMap[params.slug];
 
   if (!product) {
     return (
@@ -70,7 +48,10 @@ export default async function ProductPage({
           </p>
 
           <p className="mt-8 text-3xl font-semibold text-[#151515]">
-            {product.price}
+            {product.price.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })}
           </p>
 
           <button

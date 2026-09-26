@@ -1,25 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-const products = [
-  {
-    slug: "pack-prompts-fotos",
-    title: "Pack de Prompts para Fotos",
-    description: "100 prompts para criar fotos incríveis com inteligência artificial.",
-    price: "R$ 19,90",
-  },
-  {
-    slug: "pack-criativo",
-    title: "Pack Criativo",
-    description: "Materiais digitais para deixar suas criações mais profissionais.",
-    price: "R$ 29,90",
-  },
-  {
-    slug: "ebook-criatividade",
-    title: "E-book Criatividade",
-    description: "Conteúdo prático para desenvolver ideias e melhorar suas criações.",
-    price: "R$ 24,90",
-  },
-];
+import { products } from "@/data/products";
 
 export default function ProductsPage() {
   return (
@@ -58,7 +39,10 @@ export default function ProductsPage() {
 
               <div className="mt-6 flex items-center justify-between gap-4">
                 <span className="font-semibold text-[#151515]">
-                  {product.price}
+                  {product.price.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
                 </span>
 
                 <Link href={`/produto/${product.slug}`}>
