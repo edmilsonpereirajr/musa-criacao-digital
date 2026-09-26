@@ -1,21 +1,32 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { ProductCard } from "@/components/ui/ProductCard";
+import { CategoryCard } from "@/components/ui/CategoryCard";
+import type { Product } from "@/types/product";
 
-const products = [
+const products: Product[] = [
   {
+    id: "pack-prompts-fotos",
+    slug: "pack-prompts-fotos",
     title: "Prompts para Fotos",
     description: "Ideias prontas para criar fotos incríveis com IA.",
-    price: "R$ 19,90",
+    price: 29.9,
   },
   {
+    id: "pack-criativo",
+    slug: "pack-criativo",
     title: "Pack Criativo",
-    description: "Materiais digitais para deixar suas criações mais profissionais.",
-    price: "R$ 29,90",
+    description:
+      "Materiais digitais para deixar suas criações mais profissionais.",
+    price: 19.9,
   },
   {
+    id: "ebook-criatividade",
+    slug: "ebook-criatividade",
     title: "E-book Digital",
-    description: "Conteúdo prático para aprender e colocar suas ideias em ação.",
-    price: "R$ 24,90",
+    description:
+      "Conteúdo prático para aprender e colocar suas ideias em ação.",
+    price: 24.9,
   },
 ];
 
@@ -39,8 +50,38 @@ export default function Home() {
 
           <div className="mt-8">
             <Link href="/produtos">
-               <Button>Ver produtos</Button>
-          </Link>
+              <Button>Ver produtos</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-[#d8d0c4]">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <span className="text-sm font-medium uppercase tracking-[0.2em] text-[#d42367]">
+              Explore
+            </span>
+
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#151515]">
+              Encontre o que você precisa
+            </h2>
+
+            <p className="mt-4 text-[#6f6a63]">
+              Escolha uma categoria e encontre materiais digitais para o seu
+              próximo projeto.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              "Prompts",
+              "Packs criativos",
+              "E-books",
+              "Templates",
+            ].map((category) => (
+              <CategoryCard key={category} title={category} />
+            ))}
           </div>
         </div>
       </section>
@@ -58,31 +99,61 @@ export default function Home() {
 
         <div className="grid gap-6 md:grid-cols-3">
           {products.map((product) => (
-            <article
-              key={product.title}
-              className="rounded-2xl border border-[#d8d0c4] bg-[#f0ebe1] p-6"
-            >
-              <div className="mb-8 aspect-[4/3] rounded-xl bg-[#e8e1d5]" />
-
-              <h3 className="text-xl font-semibold text-[#151515]">
-                {product.title}
-              </h3>
-
-              <p className="mt-3 text-sm leading-6 text-[#6f6a63]">
-                {product.description}
-              </p>
-
-              <div className="mt-6 flex items-center justify-between">
-                <span className="font-semibold text-[#151515]">
-                  {product.price}
-                </span>
-
-                <Link href="/produtos">
-                 <Button className="px-4 py-2 text-sm">Ver produto</Button>
-                </Link>
-              </div>
-            </article>
+            <ProductCard
+              key={product.id}
+              slug={product.slug}
+              title={product.title}
+              description={product.description}
+              price={product.price}
+            />
           ))}
+        </div>
+      </section>
+
+      <section className="border-b border-[#d8d0c4]">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <span className="text-sm font-medium uppercase tracking-[0.2em] text-[#d42367]">
+              Por que a Musa?
+            </span>
+
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#151515]">
+              Tudo para facilitar sua criação
+            </h2>
+          </div>
+
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {[
+              {
+                title: "Acesso digital",
+                description:
+                  "Receba seus produtos digitais sem precisar esperar por entrega.",
+              },
+              {
+                title: "Conteúdo prático",
+                description:
+                  "Materiais pensados para você aplicar suas ideias de forma simples.",
+              },
+              {
+                title: "Compra segura",
+                description:
+                  "Pagamento protegido e acesso aos seus produtos após a confirmação.",
+              },
+            ].map((benefit) => (
+              <article
+                key={benefit.title}
+                className="rounded-2xl border border-[#d8d0c4] p-6"
+              >
+                <h3 className="text-xl font-semibold text-[#151515]">
+                  {benefit.title}
+                </h3>
+
+                <p className="mt-3 text-sm leading-6 text-[#6f6a63]">
+                  {benefit.description}
+                </p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
     </div>
