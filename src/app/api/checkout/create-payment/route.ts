@@ -11,6 +11,12 @@ type RequestBody = {
   items: CheckoutItem[];
 };
 
+function isValidUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    value,
+  );
+}
+
 export async function POST(request: Request) {
   const supabase = await createClient();
 
@@ -22,6 +28,38 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: "Não autenticado." },
       { status: 401 },
+    );
+  }
+
+  const { data: rateLimitAllowed, error: rateLimitError } =
+    await supabase.rpc("check_rate_limit", {
+      p_scope: "checkout:create-payment",
+    });
+
+  if (rateLimitError) {
+    console.error(
+      "Erro ao verificar rate limit:",
+      rateLimitError,
+    );
+
+    return NextResponse.json(
+      { error: "Não foi possível processar o checkout." },
+      { status: 500 },
+    );
+  }
+
+  if (!rateLimitAllowed) {
+    return NextResponse.json(
+      {
+        error:
+          "Muitas tentativas de checkout. Aguarde alguns segundos.",
+      },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": "60",
+        },
+      },
     );
   }
 
@@ -52,7 +90,15 @@ export async function POST(request: Request) {
     );
   }
 
+  if (items.length > 50) {
+    return NextResponse.json(
+      { error: "Carrinho com itens demais." },
+      { status: 400 },
+    );
+  }
+
   const validItems: CheckoutItem[] = [];
+  const productIds = new Set<string>();
 
   for (const item of items) {
     if (!item || typeof item !== "object") {
@@ -74,6 +120,7 @@ export async function POST(request: Request) {
 
     if (
       !productId ||
+      !isValidUuid(productId) ||
       quantity === null ||
       !Number.isInteger(quantity) ||
       quantity <= 0 ||
@@ -84,6 +131,15 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
+
+    if (productIds.has(productId)) {
+      return NextResponse.json(
+        { error: "Produto duplicado no carrinho." },
+        { status: 400 },
+      );
+    }
+
+    productIds.add(productId);
 
     validItems.push({
       productId,
@@ -124,12 +180,14 @@ export async function POST(request: Request) {
     );
   }
 
-  const productIds = orderItems.map((item) => item.product_id);
+  const orderProductIds = orderItems.map(
+    (item) => item.product_id,
+  );
 
   const { data: products, error: productsError } = await supabase
     .from("products")
     .select("id, title, description")
-    .in("id", productIds);
+    .in("id", orderProductIds);
 
   if (productsError || !products) {
     console.error(
@@ -167,7 +225,9 @@ export async function POST(request: Request) {
   const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
 
   if (!accessToken) {
-    console.error("MERCADOPAGO_ACCESS_TOKEN não configurado.");
+    console.error(
+      "MERCADOPAGO_ACCESS_TOKEN não configurado.",
+    );
 
     return NextResponse.json(
       { error: "Mercado Pago não configurado." },
@@ -178,7 +238,9 @@ export async function POST(request: Request) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
   if (!baseUrl) {
-    console.error("NEXT_PUBLIC_SITE_URL não configurado.");
+    console.error(
+      "NEXT_PUBLIC_SITE_URL não configurado.",
+    );
 
     return NextResponse.json(
       { error: "URL do site não configurada." },
@@ -228,11 +290,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const { data: preferenceSaved, error: preferenceError } =
-      await supabase.rpc("set_order_payment_preference", {
+    const {
+      data: preferenceSaved,
+      error: preferenceError,
+    } = await supabase.rpc(
+      "set_order_payment_preference",
+      {
         p_order_id: orderId,
         p_preference_id: response.id,
-      });
+      },
+    );
 
     if (preferenceError || !preferenceSaved) {
       console.error(

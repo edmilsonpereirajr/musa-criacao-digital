@@ -6,6 +6,12 @@ type RequestBody = {
   productId: string;
 };
 
+function isValidUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    value,
+  );
+}
+
 export async function POST(request: Request) {
   const supabase = await createClient();
 
@@ -17,6 +23,40 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: "Não autenticado." },
       { status: 401 },
+    );
+  }
+
+  const {
+    data: rateLimitAllowed,
+    error: rateLimitError,
+  } = await supabase.rpc("check_rate_limit", {
+    p_scope: "checkout:buy-now",
+  });
+
+  if (rateLimitError) {
+    console.error(
+      "Erro ao verificar rate limit:",
+      rateLimitError,
+    );
+
+    return NextResponse.json(
+      { error: "Não foi possível processar o checkout." },
+      { status: 500 },
+    );
+  }
+
+  if (!rateLimitAllowed) {
+    return NextResponse.json(
+      {
+        error:
+          "Muitas tentativas de checkout. Aguarde alguns segundos.",
+      },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": "60",
+        },
+      },
     );
   }
 
@@ -40,7 +80,11 @@ export async function POST(request: Request) {
 
   const productId = (body as RequestBody).productId;
 
-  if (!productId || typeof productId !== "string") {
+  if (
+    !productId ||
+    typeof productId !== "string" ||
+    !isValidUuid(productId)
+  ) {
     return NextResponse.json(
       { error: "Produto inválido." },
       { status: 400 },
@@ -61,20 +105,21 @@ export async function POST(request: Request) {
     );
   }
 
-  const { data: orderId, error: orderError } = await supabase.rpc(
-    "create_order",
-    {
+  const { data: orderId, error: orderError } =
+    await supabase.rpc("create_order", {
       p_items: [
         {
           productId: product.id,
           quantity: 1,
         },
       ],
-    },
-  );
+    });
 
   if (orderError || !orderId) {
-    console.error("Erro ao criar pedido:", orderError);
+    console.error(
+      "Erro ao criar pedido:",
+      orderError,
+    );
 
     return NextResponse.json(
       { error: "Não foi possível criar o pedido." },
@@ -82,10 +127,13 @@ export async function POST(request: Request) {
     );
   }
 
-  const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
+  const accessToken =
+    process.env.MERCADOPAGO_ACCESS_TOKEN;
 
   if (!accessToken) {
-    console.error("MERCADOPAGO_ACCESS_TOKEN não configurado.");
+    console.error(
+      "MERCADOPAGO_ACCESS_TOKEN não configurado.",
+    );
 
     return NextResponse.json(
       { error: "Mercado Pago não configurado." },
@@ -93,10 +141,13 @@ export async function POST(request: Request) {
     );
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL;
 
   if (!baseUrl) {
-    console.error("NEXT_PUBLIC_SITE_URL não configurado.");
+    console.error(
+      "NEXT_PUBLIC_SITE_URL não configurado.",
+    );
 
     return NextResponse.json(
       { error: "URL do site não configurada." },
@@ -147,11 +198,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const { data: preferenceSaved, error: preferenceError } =
-      await supabase.rpc("set_order_payment_preference", {
+    const {
+      data: preferenceSaved,
+      error: preferenceError,
+    } = await supabase.rpc(
+      "set_order_payment_preference",
+      {
         p_order_id: orderId,
         p_preference_id: response.id,
-      });
+      },
+    );
 
     if (preferenceError || !preferenceSaved) {
       console.error(
