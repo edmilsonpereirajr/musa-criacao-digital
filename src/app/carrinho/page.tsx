@@ -147,6 +147,7 @@ export default function CartPage() {
 
             <div className="mt-4 flex items-center justify-between border-t border-[#d8d0c4] pt-4">
               <span className="font-medium text-[#151515]">Total</span>
+
               <span className="text-2xl font-semibold text-[#151515]">
                 {totalPrice.toLocaleString("pt-BR", {
                   style: "currency",
@@ -155,13 +156,12 @@ export default function CartPage() {
               </span>
             </div>
 
-            <button
-              type="button"
-              disabled
-              className="mt-6 w-full cursor-not-allowed rounded-full bg-[#d8d0c4] px-6 py-4 font-medium text-[#6f6a63]"
+            <Link
+              href="/checkout"
+              className="mt-6 block w-full rounded-full bg-[#d42367] px-6 py-4 text-center font-medium text-white transition-colors hover:bg-[#b91d58]"
             >
               Finalizar compra
-            </button>
+            </Link>
 
             <Link
               href="/produtos"

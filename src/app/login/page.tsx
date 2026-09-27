@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 import { createClient } from "@/lib/supabase";
@@ -10,27 +10,42 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  function getSafeNextPath() {
+    const next = searchParams.get("next");
+
+    if (next && next.startsWith("/") && !next.startsWith("//")) {
+      return next;
+    }
+
+    return "/minha-conta";
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
     setError("");
     setLoading(true);
 
     const supabase = createClient();
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error: signInError } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
+    if (signInError) {
       setError("E-mail ou senha inválidos.");
       setLoading(false);
       return;
     }
 
-    router.push("/minha-conta");
+    const nextPath = getSafeNextPath();
+
+    window.location.assign(nextPath);
   }
 
   return (
@@ -106,23 +121,24 @@ export default function LoginPage() {
             {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>
-        <div className="mt-6 flex flex-col items-center gap-3 text-sm">
-  <a
-    href="/recuperar-senha"
-    className="text-[#d42367] transition-colors hover:text-[#b91d58]"
-  >
-    Esqueci minha senha
-  </a>
 
-  <p className="text-[#6f6a63]">
-    Ainda não tem uma conta?{" "}
-    <a
-      href="/cadastro"
-      className="font-medium text-[#151515] transition-colors hover:text-[#d42367]"
-    >
-      Criar conta
+        <div className="mt-6 flex flex-col items-center gap-3 text-sm">
+          <a
+            href="/recuperar-senha"
+            className="text-[#d42367] transition-colors hover:text-[#b91d58]"
+          >
+            Esqueci minha senha
           </a>
-         </p>
+
+          <p className="text-[#6f6a63]">
+            Ainda não tem uma conta?{" "}
+            <a
+              href="/cadastro"
+              className="font-medium text-[#151515] transition-colors hover:text-[#d42367]"
+            >
+              Criar conta
+            </a>
+          </p>
         </div>
       </div>
     </section>

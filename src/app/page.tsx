@@ -85,17 +85,18 @@ export default async function Home() {
           </h2>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              slug={product.slug}
-              title={product.title}
-              description={product.description}
-              price={Number(product.price)}
-            />
-          ))}
-        </div>
+       <div className="grid gap-6 md:grid-cols-3">
+  {products.map((product) => (
+    <ProductCard
+      key={product.id}
+      id={product.id}
+      slug={product.slug}
+      title={product.title}
+      description={product.description}
+      price={Number(product.price)}
+    />
+  ))}
+</div>
       </section>
 
       <section className="border-b border-[#d8d0c4]">

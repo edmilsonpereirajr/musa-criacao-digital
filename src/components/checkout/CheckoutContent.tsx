@@ -1,10 +1,65 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+
 import { useCart } from "@/context/CartContext";
 
 export function CheckoutContent() {
   const { items, totalItems, totalPrice } = useCart();
+
+  const [isCreatingPayment, setIsCreatingPayment] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handlePayment() {
+    setError(null);
+    setIsCreatingPayment(true);
+
+    try {
+      const response = await fetch("/api/checkout/create-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: items.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+          })),
+        }),
+      });
+
+      const data: unknown = await response.json();
+
+      if (
+        !response.ok ||
+        !data ||
+        typeof data !== "object" ||
+        !("initPoint" in data) ||
+        typeof data.initPoint !== "string"
+      ) {
+        const message =
+          data &&
+          typeof data === "object" &&
+          "error" in data &&
+          typeof data.error === "string"
+            ? data.error
+            : "Não foi possível iniciar o pagamento.";
+
+        throw new Error(message);
+      }
+
+      window.location.href = data.initPoint;
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível iniciar o pagamento.",
+      );
+
+      setIsCreatingPayment(false);
+    }
+  }
 
   if (items.length === 0) {
     return (
@@ -99,12 +154,24 @@ export function CheckoutContent() {
             </span>
           </div>
 
+          {error && (
+            <div
+              role="alert"
+              className="mt-4 rounded-xl bg-[#fce4e4] p-4 text-sm text-[#c62828]"
+            >
+              {error}
+            </div>
+          )}
+
           <button
             type="button"
-            disabled
-            className="mt-6 w-full cursor-not-allowed rounded-full bg-[#d8d0c4] px-6 py-4 font-medium text-[#6f6a63]"
+            onClick={handlePayment}
+            disabled={isCreatingPayment}
+            className="mt-6 w-full rounded-full bg-[#d42367] px-6 py-4 font-medium text-white transition-colors hover:bg-[#b91d58] disabled:cursor-not-allowed disabled:bg-[#d8d0c4] disabled:text-[#6f6a63]"
           >
-            Pagamento em breve
+            {isCreatingPayment
+              ? "Preparando pagamento..."
+              : "Pagar com Mercado Pago"}
           </button>
 
           <Link
