@@ -1,11 +1,11 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 
 import { createClient } from "@/lib/supabase";
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -49,6 +49,67 @@ export default function LoginPage() {
   }
 
   return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div>
+        <label
+          htmlFor="email"
+          className="mb-2 block text-sm font-medium text-[#151515]"
+        >
+          E-mail
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          autoComplete="email"
+          required
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          className="w-full rounded-xl border border-[#d8d0c4] bg-white px-4 py-3 text-[#151515] outline-none transition focus:border-[#d42367]"
+        />
+      </div>
+
+      <div>
+        <label
+          htmlFor="password"
+          className="mb-2 block text-sm font-medium text-[#151515]"
+        >
+          Senha
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          autoComplete="current-password"
+          required
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          className="w-full rounded-xl border border-[#d8d0c4] bg-white px-4 py-3 text-[#151515] outline-none transition focus:border-[#d42367]"
+        />
+      </div>
+
+      {error ? (
+        <p
+          role="alert"
+          className="rounded-xl bg-[#fbe9e9] px-4 py-3 text-sm text-[#c62828]"
+        >
+          {error}
+        </p>
+      ) : null}
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full rounded-full bg-[#d42367] px-6 py-3 font-medium text-white transition-colors hover:bg-[#b91d58] disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {loading ? "Entrando..." : "Entrar"}
+      </button>
+    </form>
+  );
+}
+
+export default function LoginPage() {
+  return (
     <section className="mx-auto flex min-h-[70vh] max-w-md items-center px-4 py-16">
       <div className="w-full rounded-2xl border border-[#d8d0c4] bg-[#f0ebe1] p-8">
         <div className="mb-8">
@@ -65,62 +126,15 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label
-              htmlFor="email"
-              className="mb-2 block text-sm font-medium text-[#151515]"
-            >
-              E-mail
-            </label>
-
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              className="w-full rounded-xl border border-[#d8d0c4] bg-white px-4 py-3 text-[#151515] outline-none transition focus:border-[#d42367]"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="mb-2 block text-sm font-medium text-[#151515]"
-            >
-              Senha
-            </label>
-
-            <input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className="w-full rounded-xl border border-[#d8d0c4] bg-white px-4 py-3 text-[#151515] outline-none transition focus:border-[#d42367]"
-            />
-          </div>
-
-          {error ? (
-            <p
-              role="alert"
-              className="rounded-xl bg-[#fbe9e9] px-4 py-3 text-sm text-[#c62828]"
-            >
-              {error}
-            </p>
-          ) : null}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-full bg-[#d42367] px-6 py-3 font-medium text-white transition-colors hover:bg-[#b91d58] disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {loading ? "Entrando..." : "Entrar"}
-          </button>
-        </form>
+        <Suspense
+          fallback={
+            <div className="rounded-xl bg-[#e8e1d5] px-4 py-3 text-sm text-[#6f6a63]">
+              Carregando...
+            </div>
+          }
+        >
+          <LoginForm />
+        </Suspense>
 
         <div className="mt-6 flex flex-col items-center gap-3 text-sm">
           <a
