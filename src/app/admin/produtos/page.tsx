@@ -1,140 +1,111 @@
-import { createClient } from "@/lib/supabase-server";
+import Link from "next/link";
 
-const statusLabels = {
-  pending: "Pendente",
-  paid: "Pago",
-  cancelled: "Cancelado",
-  refunded: "Reembolsado",
-} as const;
+import { getAdminProducts } from "@/lib/products";
 
-export default async function AdminOrdersPage() {
-  const supabase = await createClient();
-
-  const { data: orders, error } = await supabase
-    .from("orders")
-    .select(
-      "id, user_id, status, total, payment_provider, payment_preference_id, created_at",
-    )
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    throw new Error("Não foi possível carregar os pedidos.");
-  }
+export default async function AdminProductsPage() {
+  const products = await getAdminProducts();
 
   return (
     <section>
-      <div className="mb-8">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#d42367]">
-          Administração
-        </p>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#d42367]">
+            Administração
+          </p>
 
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[#151515]">
-          Pedidos
-        </h1>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[#151515]">
+            Produtos
+          </h1>
 
-        <p className="mt-3 text-[#6f6a63]">
-          Acompanhe os pedidos e o status dos pagamentos.
-        </p>
-      </div>
-
-      {orders.length === 0 ? (
-        <div className="rounded-2xl border border-[#d8d0c4] bg-white p-8">
-          <h2 className="text-lg font-semibold text-[#151515]">
-            Nenhum pedido encontrado
-          </h2>
-
-          <p className="mt-2 text-sm text-[#6f6a63]">
-            Os pedidos realizados pelos clientes aparecerão aqui.
+          <p className="mt-3 text-[#6f6a63]">
+            Gerencie os produtos digitais da Musa Criação Digital.
           </p>
         </div>
-      ) : (
-        <div className="overflow-hidden rounded-2xl border border-[#d8d0c4] bg-white">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px] text-left text-sm">
-              <thead className="border-b border-[#d8d0c4] bg-[#e8e1d5]">
-                <tr>
-                  <th className="px-6 py-4 font-semibold text-[#151515]">
-                    Pedido
-                  </th>
 
-                  <th className="px-6 py-4 font-semibold text-[#151515]">
-                    Cliente
-                  </th>
+        <Link
+          href="/admin/produtos/novo"
+          className="inline-flex w-fit rounded-full bg-[#d42367] px-6 py-3 font-medium text-white transition-colors hover:bg-[#b91d58]"
+        >
+          Novo produto
+        </Link>
+      </div>
 
-                  <th className="px-6 py-4 font-semibold text-[#151515]">
-                    Total
-                  </th>
+      <div className="overflow-hidden rounded-2xl border border-[#d8d0c4] bg-white">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[760px] text-left text-sm">
+            <thead className="bg-[#e8e1d5] text-[#151515]">
+              <tr>
+                <th className="px-6 py-4 font-semibold">Produto</th>
+                <th className="px-6 py-4 font-semibold">Tipo</th>
+                <th className="px-6 py-4 font-semibold">Preço</th>
+                <th className="px-6 py-4 font-semibold">Status</th>
+                <th className="px-6 py-4 font-semibold">Ação</th>
+              </tr>
+            </thead>
 
-                  <th className="px-6 py-4 font-semibold text-[#151515]">
-                    Pagamento
-                  </th>
-
-                  <th className="px-6 py-4 font-semibold text-[#151515]">
-                    Status
-                  </th>
-
-                  <th className="px-6 py-4 font-semibold text-[#151515]">
-                    Data
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {orders.map((order) => (
-                  <tr
-                    key={order.id}
-                    className="border-b border-[#eee8de] last:border-b-0"
-                  >
-                    <td className="px-6 py-5">
-                      <p className="font-mono text-xs text-[#6f6a63]">
-                        {order.id}
+            <tbody className="divide-y divide-[#d8d0c4]">
+              {products.map((product) => (
+                <tr key={product.id}>
+                  <td className="px-6 py-5">
+                    <div>
+                      <p className="font-medium text-[#151515]">
+                        {product.title}
                       </p>
-                    </td>
 
-                    <td className="px-6 py-5">
-                      <p className="font-mono text-xs text-[#6f6a63]">
-                        {order.user_id}
+                      <p className="mt-1 text-xs text-[#6f6a63]">
+                        /{product.slug}
                       </p>
-                    </td>
+                    </div>
+                  </td>
 
-                    <td className="px-6 py-5 font-medium text-[#151515]">
-                      {Number(order.total).toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
-                    </td>
+                  <td className="px-6 py-5 capitalize text-[#6f6a63]">
+                    {product.content_type}
+                  </td>
 
-                    <td className="px-6 py-5 text-[#6f6a63]">
-                      {order.payment_provider ?? "Não definido"}
-                    </td>
+                  <td className="px-6 py-5 font-medium text-[#151515]">
+                    {Number(product.price).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </td>
 
-                    <td className="px-6 py-5">
-                      <span
-                        className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
-                          order.status === "paid"
-                            ? "bg-[#e8f5ec] text-[#16803c]"
-                            : order.status === "cancelled" ||
-                                order.status === "refunded"
-                              ? "bg-[#fbe9e9] text-[#c62828]"
-                              : "bg-[#fff4d6] text-[#8a6500]"
-                        }`}
-                      >
-                        {statusLabels[
-                          order.status as keyof typeof statusLabels
-                        ] ?? order.status}
+                  <td className="px-6 py-5">
+                    {product.is_active ? (
+                      <span className="inline-flex rounded-full bg-[#e6f4ea] px-3 py-1 text-xs font-medium text-[#16803c]">
+                        Ativo
                       </span>
-                    </td>
+                    ) : (
+                      <span className="inline-flex rounded-full bg-[#f1eee9] px-3 py-1 text-xs font-medium text-[#6f6a63]">
+                        Inativo
+                      </span>
+                    )}
+                  </td>
 
-                    <td className="px-6 py-5 text-[#6f6a63]">
-                      {new Date(order.created_at).toLocaleString("pt-BR")}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                  <td className="px-6 py-5">
+                    <Link
+                      href={`/admin/produtos/${product.id}`}
+                      className="font-medium text-[#d42367] transition-colors hover:text-[#b91d58]"
+                    >
+                      Editar
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+
+              {products.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="px-6 py-12 text-center text-[#6f6a63]"
+                  >
+                    Nenhum produto cadastrado.
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
         </div>
-      )}
+      </div>
     </section>
   );
 }

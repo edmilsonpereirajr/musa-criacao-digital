@@ -72,7 +72,7 @@ export default async function AdminDashboardPage() {
           </p>
 
           <p className="mt-2 text-sm text-[#6f6a63]">
-            Usuários cadastrados
+            Contas cadastradas
           </p>
         </article>
       </div>
