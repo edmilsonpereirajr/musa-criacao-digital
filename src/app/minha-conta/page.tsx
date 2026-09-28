@@ -48,27 +48,25 @@ export default async function MinhaContaPage() {
           .in("id", productIds)
       : { data: [], error: null };
 
-  const hasError = Boolean(
-    error || orderItemsError || productsError,
-  );
+  const hasError = Boolean(error || orderItemsError || productsError);
 
   const safeOrders = orders ?? [];
 
   return (
-    <main className="overflow-hidden bg-[#f4efe6]">
-      <section className="border-b border-[#d8d0c4] bg-[#fffdf9]">
+    <main className="overflow-hidden bg-[#F4F0E6]">
+      <section className="border-b-2 border-[#0D0D0D] bg-[#F4F0E6]">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#d42367] sm:text-sm">
+              <div className="mb-5 inline-flex border-2 border-[#0D0D0D] bg-[#FF0066] px-3 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#0D0D0D] shadow-[3px_3px_0_#0D0D0D]">
                 Área do cliente
-              </p>
+              </div>
 
-              <h1 className="mt-3 text-4xl font-bold leading-[0.95] tracking-[-0.055em] text-[#151515] sm:text-5xl lg:text-6xl">
+              <h1 className="text-5xl font-black uppercase leading-[0.88] tracking-[-0.07em] text-[#0D0D0D] sm:text-6xl lg:text-7xl">
                 Minha conta.
               </h1>
 
-              <p className="mt-5 max-w-xl text-base leading-7 text-[#6f6a63]">
+              <p className="mt-6 max-w-xl text-base leading-7 text-[#0D0D0D]/65 sm:text-lg">
                 Acompanhe seus pedidos, pagamentos e produtos digitais em um
                 só lugar.
               </p>
@@ -77,7 +75,7 @@ export default async function MinhaContaPage() {
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
               <a
                 href="/produtos"
-                className="rounded-full border border-[#d8d0c4] bg-[#fffdf9] px-6 py-3 text-center text-sm font-semibold text-[#151515] transition-all hover:-translate-y-0.5 hover:border-[#d42367] hover:text-[#d42367]"
+                className="border-2 border-[#0D0D0D] bg-[#F4F0E6] px-6 py-3 text-center text-sm font-black text-[#0D0D0D] shadow-[3px_3px_0_#0D0D0D] transition-all hover:-translate-y-0.5 hover:translate-x-0.5 hover:bg-[#FF0066] hover:shadow-[1px_1px_0_#0D0D0D]"
               >
                 Explorar produtos
               </a>
@@ -91,37 +89,41 @@ export default async function MinhaContaPage() {
       <section>
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-20 lg:px-8 lg:py-24">
           <div className="grid gap-8 lg:grid-cols-[320px_1fr] lg:items-start">
-            <aside className="rounded-[1.75rem] bg-[#151515] p-6 text-white shadow-[0_25px_60px_rgba(21,21,21,0.12)] sm:p-7 lg:sticky lg:top-6">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#d42367] text-xl font-bold">
+            <aside className="border-2 border-[#F4F0E6] bg-[#0D0D0D] p-6 text-[#F4F0E6] shadow-[6px_6px_0_#FF0066] sm:p-7 lg:sticky lg:top-24">
+              <div className="flex h-14 w-14 items-center justify-center border-2 border-[#0D0D0D] bg-[#FF0066] text-xl font-black text-[#0D0D0D]">
                 {user.email?.charAt(0).toUpperCase() ?? "M"}
               </div>
 
-              <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-[#f8a6c2]">
+              <p className="mt-6 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#FF0066]">
                 Conta
               </p>
 
-              <h2 className="mt-2 text-xl font-bold tracking-[-0.03em]">
+              <h2 className="mt-2 text-2xl font-black uppercase tracking-[-0.04em]">
                 Seus dados
               </h2>
 
-              <div className="mt-6 border-t border-white/10 pt-5">
-                <p className="text-xs text-[#9f9890]">E-mail</p>
+              <div className="mt-6 border-t-2 border-[#F4F0E6]/15 pt-5">
+                <p className="font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[#F4F0E6]/45">
+                  E-mail
+                </p>
 
-                <p className="mt-1 break-all text-sm font-medium text-white">
+                <p className="mt-2 break-all text-sm font-medium text-[#F4F0E6]">
                   {user.email}
                 </p>
               </div>
 
-              <div className="mt-5 border-t border-white/10 pt-5">
-                <p className="text-xs text-[#9f9890]">Pedidos</p>
+              <div className="mt-5 border-t-2 border-[#F4F0E6]/15 pt-5">
+                <p className="font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[#F4F0E6]/45">
+                  Pedidos
+                </p>
 
-                <p className="mt-1 text-2xl font-bold tracking-[-0.04em]">
+                <p className="mt-1 text-3xl font-black tracking-[-0.05em] text-[#FF0066]">
                   {safeOrders.length}
                 </p>
               </div>
 
-              <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs leading-5 text-[#c9c2b9]">
+              <div className="mt-6 border-2 border-[#F4F0E6]/15 bg-[#F4F0E6]/5 p-4">
+                <p className="text-xs leading-5 text-[#F4F0E6]/65">
                   Seus pedidos e produtos são carregados de forma protegida
                   pela sua conta.
                 </p>
@@ -129,48 +131,48 @@ export default async function MinhaContaPage() {
             </aside>
 
             <section>
-              <div className="mb-7">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#d42367] sm:text-sm">
+              <div className="mb-7 border-b-2 border-[#0D0D0D] pb-7">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#FF0066] sm:text-xs">
                   Histórico
                 </p>
 
-                <h2 className="mt-2 text-3xl font-bold tracking-[-0.045em] text-[#151515]">
+                <h2 className="mt-3 text-4xl font-black uppercase leading-[0.92] tracking-[-0.055em] text-[#0D0D0D] sm:text-5xl">
                   Meus pedidos
                 </h2>
 
-                <p className="mt-3 max-w-xl text-sm leading-6 text-[#6f6a63]">
-                  Aqui você pode acompanhar suas compras e os produtos de
-                  cada pedido.
+                <p className="mt-4 max-w-xl text-sm leading-6 text-[#0D0D0D]/60">
+                  Aqui você pode acompanhar suas compras e os produtos de cada
+                  pedido.
                 </p>
               </div>
 
               {hasError ? (
-                <div className="rounded-[1.5rem] border border-[#f0b8b8] bg-[#fce4e4] p-6 text-sm leading-6 text-[#c62828]">
+                <div className="border-2 border-[#0D0D0D] bg-[#FBE9E9] p-6 text-sm leading-6 text-[#C62828] shadow-[4px_4px_0_#0D0D0D]">
                   Não foi possível carregar seus pedidos.
                 </div>
               ) : safeOrders.length === 0 ? (
-                <div className="rounded-[1.75rem] border border-[#d8d0c4] bg-[#fffdf9] p-8 shadow-[0_10px_30px_rgba(21,21,21,0.04)] sm:p-10">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#f8dce7] text-xl text-[#d42367]">
+                <div className="border-2 border-[#0D0D0D] bg-[#F4F0E6] p-8 shadow-[5px_5px_0_#0D0D0D] sm:p-10">
+                  <div className="flex h-14 w-14 items-center justify-center border-2 border-[#0D0D0D] bg-[#FF0066] text-xl font-black text-[#0D0D0D]">
                     ✦
                   </div>
 
-                  <h3 className="mt-6 text-2xl font-bold tracking-[-0.04em] text-[#151515]">
+                  <h3 className="mt-6 text-2xl font-black uppercase leading-tight tracking-[-0.04em] text-[#0D0D0D]">
                     Você ainda não fez nenhum pedido.
                   </h3>
 
-                  <p className="mt-3 max-w-md text-sm leading-6 text-[#6f6a63]">
+                  <p className="mt-3 max-w-md text-sm leading-6 text-[#0D0D0D]/60">
                     Seus pedidos aparecerão aqui depois da primeira compra.
                   </p>
 
                   <a
                     href="/produtos"
-                    className="mt-7 inline-flex rounded-full bg-[#d42367] px-6 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-[#b91d58]"
+                    className="mt-7 inline-flex border-2 border-[#0D0D0D] bg-[#FF0066] px-6 py-3.5 text-sm font-black text-[#0D0D0D] shadow-[3px_3px_0_#0D0D0D] transition-all hover:-translate-y-0.5 hover:translate-x-0.5 hover:shadow-[1px_1px_0_#0D0D0D]"
                   >
                     Explorar produtos ↗
                   </a>
                 </div>
               ) : (
-                <div className="space-y-5">
+                <div className="space-y-6">
                   {safeOrders.map((order) => {
                     const itemsForOrder =
                       orderItems?.filter(
@@ -185,17 +187,17 @@ export default async function MinhaContaPage() {
                     return (
                       <article
                         key={order.id}
-                        className="overflow-hidden rounded-[1.75rem] border border-[#d8d0c4] bg-[#fffdf9] shadow-[0_10px_30px_rgba(21,21,21,0.04)]"
+                        className="overflow-hidden border-2 border-[#0D0D0D] bg-[#F4F0E6] shadow-[5px_5px_0_#0D0D0D]"
                       >
                         <div className="p-5 sm:p-7">
                           <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                             <div className="min-w-0">
                               <div className="flex flex-wrap items-center gap-3">
-                                <span className="rounded-full bg-[#f4efe6] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#6f6a63]">
+                                <span className="border-2 border-[#0D0D0D] bg-[#0D0D0D] px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[#F4F0E6]">
                                   Pedido
                                 </span>
 
-                                <span className="text-xs text-[#9a9389]">
+                                <span className="font-mono text-[10px] text-[#0D0D0D]/45">
                                   {new Date(
                                     order.created_at,
                                   ).toLocaleDateString("pt-BR", {
@@ -206,25 +208,25 @@ export default async function MinhaContaPage() {
                                 </span>
                               </div>
 
-                              <p className="mt-3 break-all font-mono text-xs text-[#9a9389]">
+                              <p className="mt-3 break-all font-mono text-[10px] text-[#0D0D0D]/45">
                                 {order.id}
                               </p>
                             </div>
 
                             <div className="sm:text-right">
                               <span
-                                className={`inline-flex rounded-full px-3 py-1.5 text-xs font-bold ${
+                                className={`inline-flex border-2 border-[#0D0D0D] px-3 py-1.5 text-xs font-black ${
                                   isPaid
-                                    ? "bg-[#e8f5e9] text-[#16803c]"
+                                    ? "bg-[#D9F2DE] text-[#16803C]"
                                     : isCancelled
-                                      ? "bg-[#fbe9e9] text-[#c62828]"
-                                      : "bg-[#f8dce7] text-[#d42367]"
+                                      ? "bg-[#FBE9E9] text-[#C62828]"
+                                      : "bg-[#FF0066] text-[#0D0D0D]"
                                 }`}
                               >
                                 {statusLabels[order.status] ?? order.status}
                               </span>
 
-                              <p className="mt-3 text-2xl font-bold tracking-[-0.04em] text-[#151515]">
+                              <p className="mt-3 text-2xl font-black tracking-[-0.05em] text-[#0D0D0D]">
                                 {Number(order.total).toLocaleString("pt-BR", {
                                   style: "currency",
                                   currency: "BRL",
@@ -233,13 +235,13 @@ export default async function MinhaContaPage() {
                             </div>
                           </div>
 
-                          <div className="mt-6 border-t border-[#d8d0c4] pt-6">
+                          <div className="mt-6 border-t-2 border-[#0D0D0D] pt-6">
                             <div className="flex items-center justify-between">
-                              <h3 className="text-sm font-bold uppercase tracking-[0.12em] text-[#151515]">
+                              <h3 className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#0D0D0D]">
                                 Produtos
                               </h3>
 
-                              <span className="text-xs text-[#9a9389]">
+                              <span className="font-mono text-[10px] text-[#0D0D0D]/45">
                                 {itemsForOrder.length}{" "}
                                 {itemsForOrder.length === 1
                                   ? "produto"
@@ -257,19 +259,19 @@ export default async function MinhaContaPage() {
                                 return (
                                   <div
                                     key={item.id}
-                                    className="flex items-center justify-between gap-4 rounded-2xl border border-[#e3ddd4] bg-[#f4efe6] p-4"
+                                    className="flex items-center justify-between gap-4 border-2 border-[#0D0D0D] bg-[#F4F0E6] p-4"
                                   >
                                     <div className="min-w-0">
-                                      <p className="truncate text-sm font-semibold text-[#151515]">
+                                      <p className="truncate text-sm font-black uppercase text-[#0D0D0D]">
                                         {product?.title ?? "Produto"}
                                       </p>
 
-                                      <p className="mt-1 text-xs text-[#6f6a63]">
+                                      <p className="mt-1 font-mono text-[10px] text-[#0D0D0D]/50">
                                         Quantidade: {item.quantity}
                                       </p>
                                     </div>
 
-                                    <p className="shrink-0 text-sm font-bold text-[#151515]">
+                                    <p className="shrink-0 text-sm font-black text-[#0D0D0D]">
                                       {Number(
                                         item.unit_price * item.quantity,
                                       ).toLocaleString("pt-BR", {
@@ -285,8 +287,8 @@ export default async function MinhaContaPage() {
                         </div>
 
                         {isPaid ? (
-                          <div className="border-t border-[#d8d0c4] bg-[#f8dce7] px-5 py-4 sm:px-7">
-                            <p className="text-xs font-semibold text-[#6f6a63]">
+                          <div className="border-t-2 border-[#0D0D0D] bg-[#FF0066] px-5 py-4 sm:px-7">
+                            <p className="text-xs font-black text-[#0D0D0D]">
                               ✓ Pagamento confirmado. Seus produtos digitais
                               estão associados a este pedido.
                             </p>

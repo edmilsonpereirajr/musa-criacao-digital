@@ -1,24 +1,49 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
 const COOKIE_CONSENT_KEY = "musa-cookie-consent";
 
 type Consent = "all" | "necessary";
 
-export function CookieBanner() {
-  const [visible, setVisible] = useState(() => {
-    if (typeof window === "undefined") {
-      return false;
-    }
+let hydrated = false;
 
-    return !window.localStorage.getItem(COOKIE_CONSENT_KEY);
-  });
+function subscribe(callback: () => void) {
+  window.addEventListener("musa-cookie-consent", callback);
+
+  return () => {
+    window.removeEventListener("musa-cookie-consent", callback);
+  };
+}
+
+function getSnapshot() {
+  if (!hydrated) {
+    return false;
+  }
+
+  return !window.localStorage.getItem(COOKIE_CONSENT_KEY);
+}
+
+function getServerSnapshot() {
+  return false;
+}
+
+export function CookieBanner() {
+  const visible = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
+
+  useEffect(() => {
+    hydrated = true;
+    window.dispatchEvent(new Event("musa-cookie-consent"));
+  }, []);
 
   function saveConsent(consent: Consent) {
     window.localStorage.setItem(COOKIE_CONSENT_KEY, consent);
-    setVisible(false);
+    window.dispatchEvent(new Event("musa-cookie-consent"));
   }
 
   if (!visible) {

@@ -1,27 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4efe6;
-  --foreground: #151515;
+  --background: #f4f0e6;
+  --foreground: #0d0d0d;
 
-  --primary: #d42367;
-  --primary-hover: #b91d58;
-  --primary-soft: #f8dce7;
+  --primary: #ff0066;
+  --primary-hover: #d90057;
+  --primary-soft: #ffd1e2;
 
-  --surface: #fffdf9;
-  --surface-muted: #ece4d8;
-  --secondary: #e8e1d5;
+  --surface: #ffffff;
+  --surface-muted: #ebe6dc;
+  --secondary: #0d0d0d;
 
-  --muted: #6f6a63;
-  --border: #d8d0c4;
+  --muted: #66625b;
+  --border: #0d0d0d;
 
   --success: #16803c;
   --danger: #c62828;
 
-  --radius-sm: 0.75rem;
-  --radius-md: 1.25rem;
-  --radius-lg: 1.75rem;
-  --radius-xl: 2.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
 }
 
 * {
@@ -36,16 +36,18 @@ html {
 body {
   margin: 0;
   min-width: 320px;
+  min-height: 100vh;
   background:
     radial-gradient(
-      circle at 85% 5%,
-      rgba(248, 220, 231, 0.45),
-      transparent 28rem
+      circle at 90% 0%,
+      rgba(255, 0, 102, 0.08),
+      transparent 24rem
     ),
     var(--background);
   color: var(--foreground);
   font-family:
-    "Trebuchet MS",
+    "Inter",
+    "Plus Jakarta Sans",
     "Segoe UI",
     Arial,
     Helvetica,
@@ -54,9 +56,33 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family:
+    "Syne",
+    "Arial Black",
+    "Segoe UI",
+    Arial,
+    sans-serif;
+  font-weight: 800;
+}
+
+code,
+pre,
+.font-mono {
+  font-family:
+    "Space Mono",
+    "Courier New",
+    monospace;
+}
+
 ::selection {
   background: var(--primary);
-  color: #ffffff;
+  color: var(--foreground);
 }
 
 button,
@@ -86,12 +112,12 @@ a {
 }
 
 :focus-visible {
-  outline: 3px solid rgba(212, 35, 103, 0.35);
+  outline: 3px solid rgba(255, 0, 102, 0.45);
   outline-offset: 3px;
 }
 
 ::placeholder {
-  color: #9a9389;
+  color: #8a857c;
 }
 
 ::-webkit-scrollbar {
@@ -103,9 +129,9 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  border: 3px solid var(--background);
-  border-radius: 999px;
-  background: #c9c0b4;
+  border: 2px solid var(--background);
+  border-radius: 0;
+  background: var(--secondary);
 }
 
 ::-webkit-scrollbar-thumb:hover {

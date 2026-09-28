@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" data-scroll-behavior="smooth">
-      <body className="min-h-screen bg-[#f0ebe1] text-[#151515]">
+      <body className="min-h-screen bg-[#F4F0E6] text-[#0D0D0D]">
         <CartProvider>
           <Header />
           <main className="flex-1">{children}</main>
