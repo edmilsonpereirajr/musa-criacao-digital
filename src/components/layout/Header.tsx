@@ -1,6 +1,41 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+import { createClient } from "@/lib/supabase";
 
 export function Header() {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    supabase.auth.getUser().then(({ data }) => {
+      setLoggedIn(Boolean(data.user));
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setLoggedIn(Boolean(session?.user));
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  async function handleSignOut() {
+    const supabase = createClient();
+
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  }
+
   return (
     <header className="sticky top-0 z-50 border-b border-[#ded5c8]/80 bg-[#f4efe6]/95 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -48,7 +83,7 @@ export function Header() {
           </Link>
 
           <Link
-            href="/"
+            href="/contato"
             className="relative py-2 transition-colors hover:text-[#d42367]"
           >
             Suporte
@@ -93,12 +128,31 @@ export function Header() {
             </svg>
           </Link>
 
-          <Link
-            href="/minha-conta"
-            className="rounded-full bg-[#d42367] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#b91d58] hover:shadow-md"
-          >
-            Entrar
-          </Link>
+          {loggedIn ? (
+            <>
+              <Link
+                href="/minha-conta"
+                className="rounded-full bg-[#d42367] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#b91d58] hover:shadow-md"
+              >
+                Minha conta
+              </Link>
+
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="hidden text-sm font-semibold text-[#6f6a63] transition-colors hover:text-[#d42367] sm:block"
+              >
+                Sair
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="rounded-full bg-[#d42367] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#b91d58] hover:shadow-md"
+            >
+              Entrar
+            </Link>
+          )}
         </div>
       </div>
     </header>
