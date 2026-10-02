@@ -7,6 +7,7 @@ type AddToCartButtonProps = {
   slug: string;
   title: string;
   price: number;
+  className?: string;
 };
 
 export function AddToCartButton({
@@ -14,6 +15,7 @@ export function AddToCartButton({
   slug,
   title,
   price,
+  className,
 }: AddToCartButtonProps) {
   const { addItem } = useCart();
 
@@ -30,7 +32,10 @@ export function AddToCartButton({
     <button
       type="button"
       onClick={handleAddToCart}
-      className="w-full rounded-full bg-[#d42367] px-7 py-4 font-medium text-white transition-colors hover:bg-[#b91d58]"
+      className={
+        className ??
+        "w-full rounded-full bg-[#d42367] px-7 py-4 font-medium text-white transition-colors hover:bg-[#b91d58]"
+      }
     >
       Adicionar ao carrinho
     </button>
